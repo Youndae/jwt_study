@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script  type="text/javascript" th:src="@{https://code.jquery.com/jquery-3.3.1.min.js}"></script>
+<script>
+    $(document).ready(function(){
+
+        function setToken(token){
+            var hReq = new XMLHttpRequest();
+
+            hReq.open("get", "/api/v1/user", false);
+
+            hReq.setRequestHeader("Authorization", token);
+
+            hReq.send();
+
+
+        }
+
+        $(function (key){
+            $("#loginBtn").click(function (key){
+                var username = $("#username").val();
+                var password = $("#password").val();
+
+                console.log("username : " + username + "\n password : " + password);
+
+                var data = new Object();
+
+                data.username = username;
+                data.password = password;
+
+                data = JSON.stringify(data);
+
+                console.log(data);
+
+                $.ajax({
+                    type: "post",
+                    url: "/login",
+                    data: data,
+                    success: function(data, textStatus, request, xhr){
+                        console.log("success");
+
+                        var token = request.getResponseHeader('Authorization');
+                        console.log("token : " + token);
+
+                        xhr.setRequestHeader("Authorization", token);
+
+                        localStorage.setItem("Authorization", token);
+
+                        location.href="/user";
+                        // location.href="/api/v1/user";
+                    }
+                });
+
+                /*$.ajax({
+                    type: "get",
+                    url: "/user",
+                    async: false,
+                    beforeSend: function(xhr){
+                        xhr.setRequestHeader("Authorization", localStorage.getItem("Authorization"));
+                    },
+                    success: function(){
+                        console.log("get User");
+                    }
+                });*/
+            })
+        });
+    });
+</script>
+<body>
+<div class="content">
+    <div>
+        <label>아이디</label>
+    </div>
+    <div>
+        <input type="text" id="username" placeholder="아이디를 입력하세요"/>
+    </div>
+    <div>
+        <label>비밀번호</label>
+    </div>
+    <div>
+        <input type="password" id="password"/>
+    </div>
+    <div>
+        <button id="loginBtn">login</button>
+    </div>
+</div>
+</body>
+</html>
