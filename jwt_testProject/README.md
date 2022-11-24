@@ -167,4 +167,3 @@ Payload를 보면 formData가 모두 나와 아이디, 비밀번호, csrf 토큰
 > 1. localStorage에 저장을 하고 토큰을 RequestHeader에 담아서 페이지 이동을 하고자 한다면 어떻게 처리를 해야 하는가
 > 2. Cookie에 저장해 처리하는 방법을 구현했는데 httpOnly를 설정한 것 만으로 괜찮은 것인가
 > 3. Cookie에는 공백을 넣을 수 없어서 Bearer 뒤에 공백을 제거한 후 토큰을 붙여 넘겨주는 방법을 택했는데 이에 대한 문제가 발생하지 않는가
-ghp_lorWhaY2WzGWX4b0GfUyHijh34jZh927Okzn
