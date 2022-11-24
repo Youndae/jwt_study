@@ -11,9 +11,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.util.WebUtils;
+import org.yaml.snakeyaml.util.UriEncoder;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -66,6 +69,25 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(Algorithm.HMAC512(JwtProperties.SECRET));
 
         System.out.println("AuthenticationFilter token : " + jwtToken);
+
+        /*
+            쿠키값이 존재한다면 토큰값을 변경
+            존재하지 않는다면 쿠키 생성 후 토큰값을 넣어줌.
+         */
+
+        /*Cookie cookie2 = WebUtils.getCookie(request, JwtProperties.HEADER_STRING);
+
+        if(cookie2 != null){
+
+        }*/
+
+
+        Cookie cookie = new Cookie(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+
+        cookie.setPath("/");
+        cookie.setMaxAge(7 * 24 * 60 * 60);
+        cookie.isHttpOnly();
+        response.addCookie(cookie);
 
 
 

@@ -1,5 +1,6 @@
 package com.example.jwt_testproject.config;
 
+import com.example.jwt_testproject.config.auth.CustomLogoutSuccessHandler;
 import com.example.jwt_testproject.config.jwt.JwtAuthenticationFilter;
 import com.example.jwt_testproject.config.jwt.JwtAuthorizationFilter;
 import com.example.jwt_testproject.repository.UserRepository;
@@ -35,6 +36,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public CustomLogoutSuccessHandler logoutSuccessHandler(){
+        return new CustomLogoutSuccessHandler();
+    }
+
+    @Bean
     protected SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.csrf().disable();
 
@@ -43,6 +49,8 @@ public class SecurityConfig {
                 .addFilter(corsFilter)
                 .formLogin().disable()
                 .httpBasic().disable()
+                .logout().logoutSuccessHandler(logoutSuccessHandler())
+                .and()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
                 .authorizeRequests()

@@ -10,9 +10,11 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -31,19 +33,32 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         System.out.println("Authorities request");
 
-        String jwtHeader = request.getHeader("Authorization");
-        System.out.println("jwtHeader : " + jwtHeader);
+//        String jwtHeader = request.getHeader("Authorization");
+//        System.out.println("jwtHeader : " + jwtHeader);
 
-        if(jwtHeader == null || !jwtHeader.startsWith(JwtProperties.TOKEN_PREFIX)){
+//        String jwtHeader = WebUtils.getCookie(request, JwtProperties.HEADER_STRING).toString();
+        Cookie jwtCookie = WebUtils.getCookie(request, JwtProperties.HEADER_STRING);
+        System.out.println("jwtHeader : " + jwtCookie);
+
+
+        if(jwtCookie == null || !jwtCookie.getValue().startsWith(JwtProperties.TOKEN_PREFIX)){
+            System.out.println("header is null");
             chain.doFilter(request, response);
             return;
         }
 
+
+
         System.out.println("jwtHeader is not null");
 
-        String jwtToken = request
+        /*String jwtToken = request
                 .getHeader(JwtProperties.HEADER_STRING)
-                .replace(JwtProperties.TOKEN_PREFIX, "");
+                .replace(JwtProperties.TOKEN_PREFIX, "");*/
+
+        String jwtToken = jwtCookie.getValue().replace(JwtProperties.TOKEN_PREFIX, "");
+
+
+
 
         System.out.println("AuthorizationFilter jwtToken : " + jwtToken);
 
